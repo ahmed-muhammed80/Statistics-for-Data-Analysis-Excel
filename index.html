@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistics for Data Analysis using Microsoft Excel - Slide Deck</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-card: #1e293b;
+            --bg-card-border: #334155;
+            --primary: #38bdf8;
+            --primary-gradient: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+            --accent-green: #34d399;
+            --accent-amber: #fbbf24;
+            --accent-rose: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-dim: #64748b;
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Top Progress Bar */
+        .progress-container {
+            width: 100%;
+            height: 5px;
+            background: #1e293b;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--primary-gradient);
+            width: 0%;
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Main Viewport */
+        .deck-container {
+            flex: 1;
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 3rem;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transform: scale(0.96) translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 3rem 4rem;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: scale(1) translateY(0);
+        }
+
+        /* Header Components */
+        .slide-header {
+            margin-bottom: 2rem;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.85rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--primary);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            margin-bottom: 0.75rem;
+        }
+        .badge.green { background: rgba(52, 211, 153, 0.15); color: var(--accent-green); border-color: rgba(52, 211, 153, 0.3); }
+        .badge.amber { background: rgba(251, 191, 36, 0.15); color: var(--accent-amber); border-color: rgba(251, 191, 36, 0.3); }
+        .badge.rose { background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); border-color: rgba(244, 63, 94, 0.3); }
+
+        h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            line-height: 1.15;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Content Layouts */
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        .content-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            border-radius: 1rem;
+            padding: 1.5rem 1.75rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .card:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            transform: translateY(-2px);
+        }
+        .card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .card p, .card li {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Excel Formula Box */
+        .excel-box {
+            background: #090d16;
+            border: 1px solid #1e293b;
+            border-left: 4px solid var(--accent-green);
+            border-radius: 0.75rem;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            font-family: var(--font-mono);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .excel-formula {
+            color: var(--accent-green);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .excel-label {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Stat Display */
+        .stat-callout {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+            margin: 0.75rem 0;
+        }
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            font-family: var(--font-mono);
+        }
+        .stat-unit {
+            font-size: 1rem;
+            color: var(--text-muted);
+        }
+
+        /* Code & Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: var(--bg-card);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            border: 1px solid var(--bg-card-border);
+        }
+        th, td {
+            padding: 0.85rem 1.25rem;
+            text-align: left;
+            border-bottom: 1px solid var(--bg-card-border);
+            font-size: 0.95rem;
+        }
+        th {
+            background: #0f172a;
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+        }
+        td { color: var(--text-muted); }
+        tr:last-child td { border-bottom: none; }
+
+        /* Key Takeaway Box */
+        .takeaway-box {
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 0.75rem;
+            padding: 1.25rem 1.5rem;
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .takeaway-icon {
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+        .takeaway-text {
+            color: var(--text-main);
+            font-size: 1.05rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        /* Navigation Controls */
+        .deck-controls {
+            height: 70px;
+            background: #0b1120;
+            border-top: 1px solid var(--bg-card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 3rem;
+            z-index: 90;
+        }
+
+        .nav-btn-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            background: var(--bg-card);
+            color: var(--text-main);
+            border: 1px solid var(--bg-card-border);
+            padding: 0.6rem 1.2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn:hover {
+            background: var(--primary);
+            color: #0f172a;
+            border-color: var(--primary);
+        }
+        .btn-accent {
+            background: var(--primary-gradient);
+            color: #0f172a;
+            border: none;
+        }
+        .btn-accent:hover {
+            opacity: 0.9;
+        }
+
+        .slide-counter {
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Speaker Notes Drawer */
+        .notes-drawer {
+            position: fixed;
+            bottom: 70px;
+            right: 2rem;
+            width: 420px;
+            max-height: 300px;
+            background: #0f172a;
+            border: 1px solid var(--primary);
+            border-radius: 1rem;
+            padding: 1.25rem 1.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            z-index: 95;
+            display: none;
+            overflow-y: auto;
+        }
+        .notes-drawer.active {
+            display: block;
+        }
+        .notes-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-amber);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .notes-body {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Main Deck Container -->
+    <div class="deck-container">
+
+        <!-- SLIDE 1: Title Slide -->
+        <div class="slide active" data-notes="Welcome the class warmly. Set expectations: No heavy math theory today. We are learning how data analysts use Excel to answer real business & health questions.">
+            <div class="slide-header">
+                <span class="badge">1 Hour 30 Minute Workshop</span>
+                <h1>Statistics for Data Analysis</h1>
+                <p class="subtitle">A Practical, Beginner-Friendly Guide Using Microsoft Excel</p>
+            </div>
+            <div class="content-grid-2" style="margin-top: 2rem;">
+                <div class="card">
+                    <h3>🎯 Class Goal</h3>
+                    <p>Learn how to summarize, understand, compare, and communicate complex data using essential Excel formulas and descriptive statistics.</p>
+                </div>
+                <div class="card">
+                    <h3>📊 Featured Dataset</h3>
+                    <p><strong>Global Health Statistics.csv</strong><br>1,000,000 Records | 22 Health & Economic Metrics across Global Regions.</p>
+                </div>
+            </div>
+            <div class="takeaway-box">
+                <span class="takeaway-icon">💡</span>
+                <span class="takeaway-text">"Statistics is not scary. It is simply your tool for turning raw spreadsheets into clear human stories."</span>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: Agenda -->
+        <div class="slide" data-notes="Walk through the 90-minute roadmap. Emphasize that Part 5 is our main hands-on workout in Excel.">
+            <div class="slide-header">
+                <span class="badge green">Class Roadmap</span>
+                <h2>90-Minute Lesson Agenda</h2>
+                <p class="subtitle">Structured step-by-step from core concepts to live hands-on practice</p>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Module</th>
+                        <th>Core Focus</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>10 min</strong></td>
+                        <td>Part 1: Introduction to Statistics</td>
+                        <td>Why analysts need statistics; raw data to business insights</td>
+                    </tr>
+                    <tr>
+                        <td><strong>10 min</strong></td>
+                        <td>Part 2: Types of Statistics</td>
+                        <td>Descriptive vs. Inferential Statistics (Our focus: Descriptive)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>20 min</strong></td>
+                        <td>Part 3: Central Tendency</td>
+                        <td>Mean (<code>AVERAGE</code>), Median (<code>MEDIAN</code>), Mode (<code>MODE.SNGL</code>)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>15 min</strong></td>
+                        <td>Part 4: Spread & Range</td>
+                        <td>Min (<code>MIN</code>), Max (<code>MAX</code>), Range (<code>MAX - MIN</code>)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>25 min</strong></td>
+                        <td>Part 5: Guided Hands-on Session</td>
+                        <td>Solving 6 practical Excel tasks on Global Health Statistics</td>
+                    </tr>
+                    <tr>
+                        <td><strong>10 min</strong></td>
+                        <td>Part 6: Challenge & Wrap-up</td>
+                        <td>Student Challenge, Statistics Cheat Sheet & Key Takeaways</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SLIDE 3: Dataset Inspection -->
+        <div class="slide" data-notes="Point out the 1,000,000 rows. Ask: Can anyone spot the average treatment cost by scrolling? No! That's why we need Excel summary formulas.">
+            <div class="slide-header">
+                <span class="badge amber">Data Inspection</span>
+                <h2>Our Dataset: Global Health Statistics</h2>
+                <p class="subtitle">Inspecting 1,000,000 rows across 22 global metrics</p>
+            </div>
+            <div class="content-grid">
+                <div class="card">
+                    <h3>💵 Average Treatment Cost</h3>
+                    <div class="stat-callout">
+                        <span class="stat-number">$25,010.31</span>
+                        <span class="stat-unit">USD Avg</span>
+                    </div>
+                    <p>Continuous numerical financial metric ($100 to $50,000).</p>
+                </div>
+                <div class="card">
+                    <h3>📉 Mortality Rate (%)</h3>
+                    <div class="stat-callout">
+                        <span class="stat-number">5.05%</span>
+                        <span class="stat-unit">Mean Rate</span>
+                    </div>
+                    <p>Health outcome metric spanning 0.10% to 10.00%.</p>
+                </div>
+                <div class="card">
+                    <h3>🏥 Recovery Rate (%)</h3>
+                    <div class="stat-callout">
+                        <span class="stat-number">74.50%</span>
+                        <span class="stat-unit">Mean Rate</span>
+                    </div>
+                    <p>Patient recovery outcome spanning 50.00% to 99.00%.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Pro Tip - Handling 1M Rows in Excel -->
+        <div class="slide" data-notes="Crucial technical tip! Remind students NEVER to click and drag down 1 million rows. Use Ctrl+Shift+Down or whole column references like O:O.">
+            <div class="slide-header">
+                <span class="badge rose">Excel Efficiency</span>
+                <h2>Working with 1,000,000 Rows in Excel</h2>
+                <p class="subtitle">How to analyze massive datasets smoothly without freezing your computer</p>
+            </div>
+            <div class="content-grid">
+                <div class="card">
+                    <h3>⚡ 1. Whole-Column References</h3>
+                    <p>Use whole column selections in formulas instead of dragging range boxes:</p>
+                    <div class="excel-box">
+                        <span class="excel-formula">=AVERAGE(O:O)</span>
+                        <span class="excel-label">Fast</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>⌨️ 2. Keyboard Shortcuts</h3>
+                    <p>Jump to bottom of dataset instantly:</p>
+                    <p><strong>Windows:</strong> <code>Ctrl + Shift + ↓</code><br><strong>Mac:</strong> <code>Cmd + Shift + ↓</code></p>
+                </div>
+                <div class="card">
+                    <h3>📊 3. Working Sample Tab</h3>
+                    <p>Use a 10-row or 1,000-row sample worksheet tab for instant live practice during class demonstrations!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Part 1 - What is Statistics? -->
+        <div class="slide" data-notes="Ask Question 1: 'If a company says average salary is $100k, does everyone earn $100k?' Use simple workplace examples.">
+            <div class="slide-header">
+                <span class="badge">Part 1</span>
+                <h2>What is Statistics in Data Analysis?</h2>
+                <p class="subtitle">Turning raw, unreadable data into actionable business intelligence</p>
+            </div>
+            <div class="content-grid-2">
+                <div class="card">
+                    <h3>❌ Without Statistics</h3>
+                    <p>Looking at 1,000,000 rows of individual hospital bills, patient ages, and recovery percentages line-by-line leads to <strong>information overload</strong>.</p>
+                </div>
+                <div class="card">
+                    <h3>✅ With Statistics</h3>
+                    <p>Summarizing 1,000,000 rows into 3 clean metrics: <em>Average Cost ($25,010)</em>, <em>Median Cost ($24,980)</em>, and <em>Range ($49,900)</em> creates an instant <strong>executive narrative</strong>.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: Part 2 - Types of Statistics -->
+        <div class="slide" data-notes="Cookie batch analogy: Weighing all 100 cookies = Descriptive. Tasting 3 cookies and guessing the batch taste = Inferential.">
+            <div class="slide-header">
+                <span class="badge green">Part 2</span>
+                <h2>Descriptive vs. Inferential Statistics</h2>
+                <p class="subtitle">Understanding the two major branches of statistics</p>
+            </div>
+            <div class="content-grid-2">
+                <div class="card" style="border-top: 4px solid var(--primary);">
+                    <h3>📊 Descriptive Statistics</h3>
+                    <p><strong>"What does our dataset tell us right now?"</strong></p>
+                    <br>
+                    <p>Summarizes and describes the exact data you have measured. Our entire focus today!</p>
+                </div>
+                <div class="card" style="border-top: 4px solid var(--accent-amber);">
+                    <h3>🔮 Inferential Statistics</h3>
+                    <p><strong>"What can we conclude about a larger population?"</strong></p>
+                    <br>
+                    <p>Uses a small sample to make predictions or hypothesis tests about data you haven't seen.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Part 3A - Central Tendency: Mean -->
+        <div class="slide" data-notes="Demonstrate =AVERAGE(O:O). Explain that mean is sensitive to extreme values (outliers).">
+            <div class="slide-header">
+                <span class="badge amber">Part 3A</span>
+                <h2>Central Tendency: The Mean (Average)</h2>
+                <p class="subtitle">The sum of all values divided by the number of values</p>
+            </div>
+            <div class="content-grid-2">
+                <div>
+                    <div class="card">
+                        <h3>📐 Concept</h3>
+                        <p>The standard arithmetic average. Provides a single central balance point for a numerical dataset.</p>
+                    </div>
+                    <div class="excel-box">
+                        <span class="excel-formula">=AVERAGE(O2:O1000001)</span>
+                        <span class="excel-label">Excel Formula</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>🏥 Global Dataset Application</h3>
+                    <p><strong>Column:</strong> <code>Average Treatment Cost (USD)</code></p>
+                    <div class="stat-callout">
+                        <span class="stat-number">$25,010.31</span>
+                    </div>
+                    <p><em>Interpretation:</em> Across our 1,000,000 health records, treatment costs center around <strong>$25,010.31</strong>.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: Part 3B - Central Tendency: Median -->
+        <div class="slide" data-notes="Highlight why Median is resistant to outliers. 50% above, 50% below.">
+            <div class="slide-header">
+                <span class="badge amber">Part 3B</span>
+                <h2>Central Tendency: The Median (Middle Value)</h2>
+                <p class="subtitle">The exact middle value when data is sorted from smallest to largest</p>
+            </div>
+            <div class="content-grid-2">
+                <div>
+                    <div class="card">
+                        <h3>📐 Concept</h3>
+                        <p>The 50th percentile mark. Cuts data exactly in half. <strong>Not distorted by extreme high or low values!</strong></p>
+                    </div>
+                    <div class="excel-box">
+                        <span class="excel-formula">=MEDIAN(O2:O1000001)</span>
+                        <span class="excel-label">Excel Formula</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>🏥 Global Dataset Application</h3>
+                    <p><strong>Column:</strong> <code>Average Treatment Cost (USD)</code></p>
+                    <div class="stat-callout">
+                        <span class="stat-number">$24,980.00</span>
+                    </div>
+                    <p><em>Interpretation:</em> Exactly 50% of recorded treatment costs are below <strong>$24,980.00</strong>, and 50% are above.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: Part 3C - Central Tendency: Mode -->
+        <div class="slide" data-notes="Explain that Mode is the most frequent value. Works great for discrete numbers and categorical text data!">
+            <div class="slide-header">
+                <span class="badge amber">Part 3C</span>
+                <h2>Central Tendency: The Mode (Most Frequent)</h2>
+                <p class="subtitle">The value that appears most often in a dataset</p>
+            </div>
+            <div class="content-grid-2">
+                <div>
+                    <div class="card">
+                        <h3>📐 Concept</h3>
+                        <p>Identifies popularity or high frequency. Works for numerical rates as well as categorical text values.</p>
+                    </div>
+                    <div class="excel-box">
+                        <span class="excel-formula">=MODE.SNGL(G2:G1000001)</span>
+                        <span class="excel-label">Excel Formula</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>🏥 Global Dataset Application</h3>
+                    <p><strong>Column:</strong> <code>Mortality Rate (%)</code></p>
+                    <div class="stat-callout">
+                        <span class="stat-number">6.54%</span>
+                    </div>
+                    <p><em>Interpretation:</em> The single most frequently occurring mortality rate recorded in the dataset is <strong>6.54%</strong>.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: Part 3D - Mean vs Median Skewness Story -->
+        <div class="slide" data-notes="Demonstrate with the 10-row sample: Mean ($19,693) vs Median ($15,661). The high numbers ($47k) pull the mean up!">
+            <div class="slide-header">
+                <span class="badge rose">Crucial Concept</span>
+                <h2>Mean vs. Median: The Skewness Story</h2>
+                <p class="subtitle">Why relying on the Mean alone can mislead decision-makers</p>
+            </div>
+            <div class="content-grid-2">
+                <div class="card">
+                    <h3>💡 10-Row Sample Walkthrough</h3>
+                    <p>Sample Costs: <code>$21k, $47k, $27k, $144, $8.9k, $42k, $15k, $15k, $7.6k, $9.4k</code></p>
+                    <br>
+                    <p><strong>Mean:</strong> <span style="color:var(--accent-rose); font-weight:700;">$19,693.20</span></p>
+                    <p><strong>Median:</strong> <span style="color:var(--accent-green); font-weight:700;">$15,661.50</span></p>
+                </div>
+                <div class="card">
+                    <h3>🎯 The Analyst's Verdict</h3>
+                    <p>Two expensive treatments ($47,851 & $42,671) pull the <strong>Mean up by over $4,000</strong>.</p>
+                    <br>
+                    <p>If explaining patient expectations, the <strong>Median ($15,661.50)</strong> is far more accurate for a typical patient!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: Part 4 - Spread & Range -->
+        <div class="slide" data-notes="Explain that Range = MAX - MIN. Average alone hides variability!">
+            <div class="slide-header">
+                <span class="badge green">Part 4</span>
+                <h2>Spread & Range: MIN, MAX & RANGE</h2>
+                <p class="subtitle">Understanding data boundaries and overall spread</p>
+            </div>
+            <div class="content-grid">
+                <div class="card">
+                    <h3>📉 Minimum (MIN)</h3>
+                    <div class="excel-box"><span class="excel-formula">=MIN(Q:Q)</span></div>
+                    <p>Output: <strong>50.00%</strong> (Recovery Rate)</p>
+                </div>
+                <div class="card">
+                    <h3>📈 Maximum (MAX)</h3>
+                    <div class="excel-box"><span class="excel-formula">=MAX(Q:Q)</span></div>
+                    <p>Output: <strong>99.00%</strong> (Recovery Rate)</p>
+                </div>
+                <div class="card">
+                    <h3>↔️ Range (MAX - MIN)</h3>
+                    <div class="excel-box"><span class="excel-formula">=MAX(Q:Q) - MIN(Q:Q)</span></div>
+                    <p>Output: <strong>49.00%</strong> Total Spread</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: Part 5 - Guided Hands-on Exercise -->
+        <div class="slide" data-notes="Give students 15 minutes to perform these tasks in Excel. Walk around to troubleshoot.">
+            <div class="slide-header">
+                <span class="badge">Part 5</span>
+                <h2>Guided Excel Workshop Tasks</h2>
+                <p class="subtitle">Apply formulas directly to Global Health Statistics in Excel</p>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Task</th>
+                        <th>Target Metric Column</th>
+                        <th>Excel Formula</th>
+                        <th>Expected Output</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Task 1</strong></td>
+                        <td>Prevalence Rate (%) [Col E]</td>
+                        <td><code>=AVERAGE(E:E)</code></td>
+                        <td><strong>10.05%</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Task 2</strong></td>
+                        <td>Population Affected [Col J]</td>
+                        <td><code>=MEDIAN(J:J)</code></td>
+                        <td><strong>501,041</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Task 3</strong></td>
+                        <td>Doctors per 1000 [Col L]</td>
+                        <td><code>=MODE.SNGL(L:L)</code></td>
+                        <td><strong>2.47</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Task 4</strong></td>
+                        <td>Healthcare Access (%) [Col K]</td>
+                        <td><code>=MIN(K:K)</code> & <code>=MAX(K:K)</code></td>
+                        <td><strong>50.00% to 100.00%</strong></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Task 5</strong></td>
+                        <td>Per Capita Income [Col T]</td>
+                        <td><code>=MAX(T:T) - MIN(T:T)</code></td>
+                        <td><strong>$99,500.00 Range</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SLIDE 13: Part 6 - Student Challenge -->
+        <div class="slide" data-notes="Pose these 4 challenge questions to the class. Let them calculate in Excel for 5 minutes before revealing answers.">
+            <div class="slide-header">
+                <span class="badge rose">Challenge</span>
+                <h2>Student Hands-on Challenge</h2>
+                <p class="subtitle">Use Excel to answer these 4 real-world data questions</p>
+            </div>
+            <div class="content-grid-2">
+                <div class="card">
+                    <h3>Q1: Average Mortality</h3>
+                    <p>What is the average <code>Mortality Rate (%)</code> across the dataset?</p>
+                </div>
+                <div class="card">
+                    <h3>Q2: Median Recovery</h3>
+                    <p>What is the median <code>Recovery Rate (%)</code>?</p>
+                </div>
+                <div class="card">
+                    <h3>Q3: Hospital Beds Range</h3>
+                    <p>What is the total range of <code>Hospital Beds per 1000</code>?</p>
+                </div>
+                <div class="card">
+                    <h3>Q4: Treatment Cost Skew</h3>
+                    <p>Which is higher for Treatment Cost: Mean or Median? What does this mean?</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 14: Challenge Answer Key -->
+        <div class="slide" data-notes="Reveal answers step-by-step and praise students for correct interpretations.">
+            <div class="slide-header">
+                <span class="badge green">Answer Key</span>
+                <h2>Instructor Answer Key</h2>
+                <p class="subtitle">Verified outputs from Global Health Statistics</p>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Excel Formula</th>
+                        <th>Exact Result</th>
+                        <th>Plain-English Interpretation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Q1</strong></td>
+                        <td><code>=AVERAGE(G:G)</code></td>
+                        <td><strong>5.05%</strong></td>
+                        <td>Mortality rates typically center around 5.05% worldwide.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Q2</strong></td>
+                        <td><code>=MEDIAN(Q:Q)</code></td>
+                        <td><strong>74.47%</strong></td>
+                        <td>Half of records report recovery rates above 74.47%.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Q3</strong></td>
+                        <td><code>=MAX(M:M) - MIN(M:M)</code></td>
+                        <td><strong>9.50 beds</strong></td>
+                        <td>The spread from lowest (0.50) to highest (10.00) is 9.50 beds/1k.</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Q4</strong></td>
+                        <td>Mean vs Median Cost</td>
+                        <td><strong>Mean > Median</strong></td>
+                        <td>Mean ($25,010) is $30 higher than Median ($24,980) due to extreme costs.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SLIDE 15: Cheat Sheet -->
+        <div class="slide" data-notes="Review the cheat sheet table. Suggest students take a photo or screenshot for future reference!">
+            <div class="slide-header">
+                <span class="badge amber">Reference</span>
+                <h2>Statistics Cheat Sheet</h2>
+                <p class="subtitle">Quick reference guide for Microsoft Excel statistical functions</p>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Statistic</th>
+                        <th>What It Tells Us</th>
+                        <th>Excel Function</th>
+                        <th>When to Use It</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Mean</strong></td>
+                        <td>Arithmetic average</td>
+                        <td><code>=AVERAGE(range)</code></td>
+                        <td>Symmetrical data without severe outliers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Median</strong></td>
+                        <td>Middle 50th percentile</td>
+                        <td><code>=MEDIAN(range)</code></td>
+                        <td>Skewed data or data with extreme values</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Mode</strong></td>
+                        <td>Most frequent value</td>
+                        <td><code>=MODE.SNGL(range)</code></td>
+                        <td>Popular categories or discrete values</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Min / Max</strong></td>
+                        <td>Lowest and highest values</td>
+                        <td><code>=MIN()</code> / <code>=MAX()</code></td>
+                        <td>Finding floors, ceilings, and boundaries</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Range</strong></td>
+                        <td>Total spread (Max − Min)</td>
+                        <td><code>=MAX() - MIN()</code></td>
+                        <td>Measuring data variability & spread</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SLIDE 16: 5 Takeaways & Wrap Up -->
+        <div class="slide" data-notes="Conclude the class with these 5 core principles. Open floor for Q&A.">
+            <div class="slide-header">
+                <span class="badge green">Wrap Up</span>
+                <h2>5 Golden Rules for Data Analysts</h2>
+                <p class="subtitle">Core takeaways to remember in your data career</p>
+            </div>
+            <div class="content-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+                <div class="card">
+                    <h3>1. Never Use One Metric</h3>
+                    <p>Always examine Mean, Median, Min, and Max together.</p>
+                </div>
+                <div class="card">
+                    <h3>2. Beware of Outliers</h3>
+                    <p>When data is skewed by extreme values, trust the Median.</p>
+                </div>
+                <div class="card">
+                    <h3>3. Speak Plain English</h3>
+                    <p>Translate formulas into clear business narratives.</p>
+                </div>
+                <div class="card">
+                    <h3>4. Know Your Scope</h3>
+                    <p>Descriptive statistics only claims what is in your data.</p>
+                </div>
+            </div>
+            <div class="takeaway-box" style="margin-top: 1rem;">
+                <span class="takeaway-icon">🎓</span>
+                <span class="takeaway-text">"Excel calculates numbers instantly, but only YOU can interpret what those numbers mean for decision-makers!"</span>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Speaker Notes Drawer -->
+    <div class="notes-drawer" id="notesDrawer">
+        <div class="notes-title">
+            <span>🎙️ Instructor Speaker Notes</span>
+            <span style="cursor:pointer;" id="closeNotes">✕</span>
+        </div>
+        <div class="notes-body" id="notesContent">
+            Speaker notes will appear here.
+        </div>
+    </div>
+
+    <!-- Navigation Controls Bar -->
+    <div class="deck-controls">
+        <div class="nav-btn-group">
+            <button class="btn" id="prevBtn">← Previous</button>
+            <button class="btn" id="nextBtn">Next →</button>
+        </div>
+        <div class="slide-counter" id="slideCounter">Slide 1 of 16</div>
+        <div class="nav-btn-group">
+            <button class="btn" id="notesToggleBtn">🎙️ Notes (N)</button>
+            <button class="btn btn-accent" id="fullscreenBtn">📺 Fullscreen (F)</button>
+        </div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progressBar');
+        const slideCounter = document.getElementById('slideCounter');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const notesDrawer = document.getElementById('notesDrawer');
+        const notesContent = document.getElementById('notesContent');
+        const notesToggleBtn = document.getElementById('notesToggleBtn');
+        const closeNotes = document.getElementById('closeNotes');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+
+        let currentSlide = 0;
+
+        function updateSlide(index) {
+            if (index < 0) index = 0;
+            if (index >= slides.length) index = slides.length - 1;
+
+            slides.forEach((slide, i) => {
+                slide.classList.toggle('active', i === index);
+            });
+
+            currentSlide = index;
+            const progress = ((index + 1) / slides.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            slideCounter.textContent = `Slide ${index + 1} of ${slides.length}`;
+
+            // Update Speaker Notes
+            const notes = slides[index].getAttribute('data-notes') || 'No notes for this slide.';
+            notesContent.textContent = notes;
+        }
+
+        prevBtn.addEventListener('click', () => updateSlide(currentSlide - 1));
+        nextBtn.addEventListener('click', () => updateSlide(currentSlide + 1));
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                updateSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft') {
+                updateSlide(currentSlide - 1);
+            } else if (e.key.toLowerCase() === 'n') {
+                notesDrawer.classList.toggle('active');
+            } else if (e.key.toLowerCase() === 'f') {
+                toggleFullscreen();
+            }
+        });
+
+        notesToggleBtn.addEventListener('click', () => notesDrawer.classList.toggle('active'));
+        closeNotes.addEventListener('click', () => notesDrawer.classList.remove('active'));
+
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    alert(`Error attempting to enable fullscreen: ${err.message}`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+        // Initial setup
+        updateSlide(0);
+    </script>
+</body>
+</html>

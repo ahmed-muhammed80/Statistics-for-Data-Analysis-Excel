@@ -1,0 +1,21 @@
+Country,Year,Disease Name,Disease Category,Prevalence Rate (%),Incidence Rate (%),Mortality Rate (%),Age Group,Gender,Population Affected,Healthcare Access (%),Doctors per 1000,Hospital Beds per 1000,Treatment Type,Average Treatment Cost (USD),Availability of Vaccines/Treatment,Recovery Rate (%),DALYs,Improvement in 5 Years (%),Per Capita Income (USD),Education Index,Urbanization Rate (%)
+Italy,2013,Malaria,Respiratory,0.95,1.55,8.42,0-18,Male,471007,57.74,3.34,7.58,Medication,21064,No,91.82,4493,2.16,16886,0.79,86.02
+France,2002,Ebola,Parasitic,12.46,8.63,8.75,61+,Male,634318,89.21,1.33,5.11,Surgery,47851,Yes,76.65,2366,4.82,80639,0.74,45.52
+Turkey,2015,COVID-19,Genetic,0.91,2.35,6.22,36-60,Male,154878,56.41,4.07,3.49,Vaccination,27834,Yes,98.55,41,5.81,12245,0.41,40.2
+Indonesia,2011,Parkinson's Disease,Autoimmune,4.68,6.29,3.99,0-18,Other,446224,85.2,3.18,8.44,Surgery,144,Yes,67.35,3201,2.22,49336,0.49,58.47
+Italy,2013,Tuberculosis,Genetic,0.83,13.59,7.01,61+,Male,472908,67.0,4.61,5.9,Medication,8908,Yes,50.06,2832,6.93,47701,0.5,48.14
+Saudi Arabia,2011,Dengue,Bacterial,10.99,6.49,4.64,61+,Female,479234,98.41,3.5,0.62,Therapy,42671,Yes,93.17,416,9.83,29597,0.46,56.5
+USA,2013,Malaria,Cardiovascular,18.42,6.33,9.33,61+,Female,289931,90.03,3.16,3.31,Surgery,15579,No,92.8,4535,0.89,60027,0.7,20.48
+Nigeria,2007,Tuberculosis,Neurological,3.48,5.71,1.21,0-18,Female,393296,75.6,0.54,3.54,Medication,15744,Yes,65.45,4584,9.81,23222,0.46,66.49
+Italy,2000,Rabies,Chronic,15.59,4.74,6.38,19-35,Female,253110,87.87,4.56,5.84,Therapy,7669,Yes,59.23,2253,9.92,30849,0.55,41.27
+Australia,2006,Cholera,Chronic,10.12,2.08,6.0,61+,Male,174143,95.9,4.63,6.01,Medication,9468,Yes,93.21,4694,2.96,68856,0.9,83.3
+Canada,2011,Leprosy,Cardiovascular,11.15,0.6,2.97,36-60,Female,76858,67.88,0.66,1.99,Surgery,19993,Yes,76.16,4238,1.23,44699,0.58,51.5
+Mexico,2009,Cancer,Metabolic,3.88,10.85,1.85,0-18,Male,462950,71.06,4.08,6.22,Vaccination,36202,Yes,63.54,2797,3.16,30015,0.61,29.05
+Nigeria,2007,Diabetes,Infectious,8.92,13.19,5.52,36-60,Female,227849,84.41,1.37,9.57,Therapy,45685,No,68.02,423,3.98,60608,0.61,68.17
+France,2004,Measles,Bacterial,11.4,5.15,7.77,61+,Male,420730,86.28,4.73,0.73,Therapy,49545,Yes,52.4,968,1.11,64119,0.59,63.84
+Italy,2013,HIV/AIDS,Cardiovascular,12.72,1.33,7.08,19-35,Other,520261,54.83,4.09,2.83,Vaccination,20169,No,87.06,4789,9.45,61376,0.5,60.67
+South Africa,2023,Malaria,Respiratory,6.32,10.45,7.01,0-18,Female,66050,91.87,1.83,4.52,Medication,4664,No,90.49,4665,6.59,79650,0.71,83.92
+India,2002,Influenza,Genetic,17.43,8.04,8.21,0-18,Male,481977,93.63,0.79,9.08,Therapy,31596,Yes,83.3,3134,7.84,98884,0.48,82.47
+Indonesia,2004,Zika,Cardiovascular,4.64,13.91,4.04,0-18,Female,996168,81.42,4.8,3.22,Medication,44696,Yes,53.46,3120,4.77,95598,0.58,74.87
+South Korea,2009,Influenza,Autoimmune,19.34,7.31,2.21,61+,Male,991054,77.78,1.24,0.61,Therapy,48221,Yes,87.06,1704,4.24,49679,0.57,21.61
+Germany,2016,Influenza,Cardiovascular,18.84,7.74,2.12,19-35,Male,146193,81.25,2.44,1.44,Vaccination,32325,No,70.52,4376,1.42,75237,0.73,83.52
